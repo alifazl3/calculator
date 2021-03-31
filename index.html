@@ -1,0 +1,46 @@
+<html>
+<head>
+    <title>
+        calculator
+    </title>
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+<body onkeydown="keyCode(event)">
+<div class="main" >
+    <div class="main__calculator">
+        <div class="main__calculator__display" id="display">
+        </div>
+        <div class="main__calculator__buttons">
+            <div class="main__calculator__buttons__btn" onclick="BackspaceDisplay()">c</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('(')">(</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay(')')">)</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('x')">x</div>
+            <br>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('1')">1</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('2')">2</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('3')">3</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('&#8722;')">&#8722;</div>
+            <br>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('4')">4</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('5')">5</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('6')">6</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('&plus;')">&plus;</div>
+            <br>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('7')">7</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('8')">8</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('9')">9</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('&div;')">&div;</div>
+            <br>
+            <div class="main__calculator__buttons__btn" onclick="clearDisplay()">ac</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('0')">0</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('&#61;')">&#61;</div>
+            <div class="main__calculator__buttons__btn" onclick="addToDisplay('&#215;')">&#215;</div>
+        </div>
+    </div>
+</div>
+<script src="script.js">
+
+</script>
+</body>
+</html>
