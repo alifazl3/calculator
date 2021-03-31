@@ -3,11 +3,25 @@
   font-family: digital;
 }
 body {
+  overflow-y: hidden;
   background-color: rgba(14, 31, 39, 0.8);
 }
 
 ::-webkit-scrollbar {
-  display: none;
+  width: 5px;
+  height: 1px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .main {
