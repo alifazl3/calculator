@@ -1,4 +1,5 @@
 var log = true;
+
 function calculate(algebra) {
     algebra = encodeURI(algebra);
     let signs = {'divide': '%C3%B7', 'multiple': '%C3%97'};
@@ -19,28 +20,74 @@ function calculate(algebra) {
     //     let newAlgebra = algebra.substr(parStart, length + 1);
     //     algebra.replace(newAlgebra, calculate(newAlgebra));
     // }
+    var nextRound = true;
+    var i = 0;
+    var char;
+    // for ( i = 0; i < algebra.length; i++) {
+    while (nextRound) {
+        char = algebra.substr(i, 1);
+        console.log(char, i)
+        nextRound = false;
 
-
-    if (algebra.indexOf("*") > -1) {
-        // console.log(13);
-        while (algebra.indexOf("*") > -1) {
-            algebra = multipl(algebra);
-        }
-
-    }
-    if (algebra.indexOf("/") > -1) {
-        while (algebra.indexOf("/") > -1) {
+        //
+        // if (char == "+") {
+        //     algebra = sum(algebra);
+        //     i = 0;
+        //
+        // }
+        if (char == "/") {
             algebra = divide(algebra);
+            i = -1;
+        }
+        if (char == "*") {
+            algebra = multipl(algebra);
+            i = -1;
         }
 
+        if (algebra.indexOf('*') > -1) {
+            nextRound = true;
+        }
+        if (algebra.indexOf('/') > -1) {
+            nextRound = true;
+        }
+        i += 1
     }
+    nextRound = true;
+    i = 0;
+    while (nextRound) {
+        char = algebra.substr(i, 1);
+        console.log(char, i)
+        nextRound = false;
 
-
-    if (algebra.indexOf("+") > -1) {
-        while (algebra.indexOf("+") > -1) {
+        //
+        // if (char == "+") {
+        //     algebra = sum(algebra);
+        //     i = 0;
+        //
+        // }
+        if (char == "+") {
             algebra = sum(algebra);
+            i = -1;
         }
+        if (char == "-") {
+            algebra = minus(algebra);
+            i = -1;
+        }
+
+        if (algebra.indexOf('+') > -1) {
+            nextRound = true;
+        }
+        if (algebra.indexOf('-') > -1) {
+
+
+            nextRound = true;
+            if (algebra.substr(0, 1) == '-') {
+                nextRound = false;
+            }
+        }
+        i += 1;
     }
+
 
     console.log(algebra);
 }
@@ -117,13 +164,40 @@ function multipl(algebra) {
         }
     }
     let algabraNew = algebra.substr(multiplePos['start'], multiplePos['end'] - multiplePos['start'] + 1);
-    let part1 = parseInt(algabraNew.substr(0, algabraNew.indexOf('*')));
-    let part2 = parseInt(algabraNew.substr(algabraNew.indexOf('*') + 1));
+    let part1 = parseFloat(algabraNew.substr(0, algabraNew.indexOf('*'))).toFixed(20);
+    let part2 = parseFloat(algabraNew.substr(algabraNew.indexOf('*') + 1)).toFixed(20);
     let multiple = part1 * part2;
     if (log) {
         console.log(algebra, algabraNew, multiple);
     }
     algebra = algebra.replace(algabraNew, multiple);
+    return algebra;
+
+}
+
+function divide(algebra) {
+    let dividePos = {'start': 0, 'sign': algebra.indexOf("/"), 'end': algebra.length - 1};
+    for (var i = dividePos['sign'] - 1; i > 0; i--) {
+        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
+            dividePos['start'] = i + 1;
+            break;
+        }
+    }
+    for (var i = dividePos['sign'] + 1; i < dividePos['end']; i++) {
+        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
+            dividePos['end']
+                = i - 1;
+            break;
+        }
+    }
+    let algabraNew = algebra.substr(dividePos['start'], dividePos['end'] - dividePos['start'] + 1);
+    let dividend = parseFloat(algabraNew.substr(0, algabraNew.indexOf('/')));
+    let divisor = parseFloat(algabraNew.substr(algabraNew.indexOf('/') + 1));
+    let quotient = dividend/ divisor;
+    if (log) {
+        console.log(algebra, algabraNew, quotient);
+    }
+    algebra = algebra.replace(algabraNew, quotient);
     return algebra;
 
 }
@@ -145,9 +219,9 @@ function sum(algebra) {
         }
     }
     let algabraNew = algebra.substr(sumPos['start'], sumPos['end'] - sumPos['start'] + 1);
-    let part1 = parseInt(algabraNew.substr(0, algabraNew.indexOf('+')));
-    let part2 = parseInt(algabraNew.substr(algabraNew.indexOf('+') + 1));
-    let sum = part1 + part2;
+    let part1 = parseFloat(algabraNew.substr(0, algabraNew.indexOf('+')));
+    let part2 = parseFloat(algabraNew.substr(algabraNew.indexOf('+') + 1));
+    let sum = part1  + part2;
     if (log) {
         console.log(algebra, algabraNew, sum);
     }
@@ -155,30 +229,29 @@ function sum(algebra) {
     return algebra;
 }
 
-function divide(algebra) {
-    let dividePos = {'start': 0, 'sign': algebra.indexOf("/"), 'end': algebra.length - 1};
-    for (var i = dividePos['sign'] - 1; i > 0; i--) {
+function minus(algebra) {
+    let minusPos = {'start': 0, 'sign': algebra.indexOf("-"), 'end': algebra.length - 1};
+    // console.log()
+    for (var i = minusPos['sign'] - 1; i > 0; i--) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
-            dividePos['start'] = i + 1;
+            minusPos['start'] = i + 1;
             break;
         }
     }
-    for (var i = dividePos['sign'] + 1; i < dividePos['end']; i++) {
+    for (var i = minusPos['sign'] + 1; i < minusPos['end']; i++) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
-            dividePos['end']
+            minusPos['end']
                 = i - 1;
             break;
         }
     }
-    let algabraNew = algebra.substr(dividePos['start'], dividePos['end'] - dividePos['start'] + 1);
-    let dividend = parseInt(algabraNew.substr(0, algabraNew.indexOf('/')));
-    let divisor = parseInt(algabraNew.substr(algabraNew.indexOf('/') + 1));
-    let quotient = dividend / divisor;
+    let algabraNew = algebra.substr(minusPos['start'], minusPos['end'] - minusPos['start'] + 1);
+    let part1 = parseFloat(algabraNew.substr(0, algabraNew.indexOf('-')));
+    let part2 = parseFloat(algabraNew.substr(algabraNew.indexOf('-') + 1));
+    let minus = part1 - part2;
     if (log) {
-        console.log(algebra, algabraNew, quotient);
+        console.log(algebra, algabraNew, minus);
     }
-    algebra = algebra.replace(algabraNew, quotient);
+    algebra = algebra.replace(algabraNew, minus);
     return algebra;
-
 }
-
