@@ -46,6 +46,19 @@ body {
   background-color: #888888;
   box-shadow: 0 0 20px 5px #212121;
 }
+.main__calculator__secondDisplay {
+  width: 90%;
+  height: 20px;
+  margin: 0px auto 0px auto;
+  background-color: #515151;
+  box-shadow: 0 0 20px 0px #4f4f4f;
+  color: white;
+  font-family: digital;
+  font-size: 23px;
+  line-height: 22px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
 .main__calculator__buttons {
   width: 80%;
   height: 200px;

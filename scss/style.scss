@@ -9,6 +9,7 @@ body {
   background-color: rgba(14, 31, 39, 0.8);
 
 }
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 1px;
@@ -52,6 +53,23 @@ body {
 
       background-color: #888888;
       box-shadow: 0 0 20px 5px #212121;
+    }
+
+    &__secondDisplay {
+      width: 90%;
+      height: 20px;
+      margin: 0px auto 0px auto;
+
+      background-color: #515151;
+      box-shadow: 0 0 20px 0px #4f4f4f;
+
+      color: white;
+      font-family: digital;
+      font-size: 23px;
+      line-height: 22px;
+
+      overflow-x: scroll;
+      overflow-y: hidden;
     }
 
     &__buttons {

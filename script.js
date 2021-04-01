@@ -1,6 +1,12 @@
 var log = true;
 
-function calculate(algebra) {
+
+
+function calculate(algebra, act = false) {
+    if (act) {
+
+        addToSecondDisplay(algebra);
+    }
     algebra = encodeURI(algebra);
     let signs = {'divide': '%C3%B7', 'multiple': '%C3%97'};
 
@@ -30,16 +36,16 @@ function calculate(algebra) {
                 newAlgebra = '*' + newAlgebra;
             }
         }
-        let nextChar = algebra.substr(algebra.indexOf(")")+1 , 1);
+        let nextChar = algebra.substr(algebra.indexOf(")") + 1, 1);
         if (nextChar < 10 || nextChar == '(') {
-            if (nextChar !=''){
+            if (nextChar != '') {
 
-            // console.log("***>", algebra.substr(algebra.indexOf(")") + 1));
-            newAlgebra = newAlgebra + '*';
+                // console.log("***>", algebra.substr(algebra.indexOf(")") + 1));
+                newAlgebra = newAlgebra + '*';
             }
         }
 
-        algebra = algebra.replace('(' + algebra.substr(parStart + 1, length - 1)+ ')', newAlgebra);
+        algebra = algebra.replace('(' + algebra.substr(parStart + 1, length - 1) + ')', newAlgebra);
         // console.log("---------->", algebra);
 
         // alert(algebra);
@@ -62,7 +68,7 @@ function calculate(algebra) {
             i = -1;
         }
         if (char == "*") {
-            algebra = multipl(algebra);
+            algebra = multiple(algebra);
             i = -1;
         }
 
@@ -107,6 +113,10 @@ function calculate(algebra) {
 
 
     console.log(algebra);
+    if (act) {
+        clearDisplay();
+        addToDisplay(algebra);
+    }
     return algebra;
 }
 
@@ -116,8 +126,14 @@ function addToDisplay(adding) {
     display.innerText = displayTxt + adding;
 }
 
+function addToSecondDisplay(adding) {
+    var display = document.getElementById('seconddisplay');
+    var displayTxt = document.getElementById('seconddisplay').innerText;
+    display.innerText = displayTxt + adding;
+}
+
 function clearDisplay() {
-    var display = document.getElementById('display');
+    let display = document.getElementById('display');
     display.innerText = '';
 
 }
@@ -161,20 +177,20 @@ function keyCode(event) {
         BackspaceDisplay();
     }
     if (event.key == "Enter") {
-        calculate(document.getElementById('display').innerText);
+        calculate(document.getElementById('display').innerText, true);
     }
     // alert(event.key);
 }
 
-function multipl(algebra) {
+function multiple(algebra) {
     let multiplePos = {'start': 0, 'sign': algebra.indexOf("*"), 'end': algebra.length - 1};
-    for (var i = multiplePos['sign'] - 1; i > 0; i--) {
+    for (let i = multiplePos['sign'] - 1; i > 0; i--) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
             multiplePos['start'] = i + 1;
             break;
         }
     }
-    for (var i = multiplePos['sign'] + 1; i < multiplePos['end']; i++) {
+    for (let i = multiplePos['sign'] + 1; i < multiplePos['end']; i++) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
             multiplePos['end'] = i - 1;
             break;
@@ -194,13 +210,13 @@ function multipl(algebra) {
 
 function divide(algebra) {
     let dividePos = {'start': 0, 'sign': algebra.indexOf("/"), 'end': algebra.length - 1};
-    for (var i = dividePos['sign'] - 1; i > 0; i--) {
+    for (let i = dividePos['sign'] - 1; i > 0; i--) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
             dividePos['start'] = i + 1;
             break;
         }
     }
-    for (var i = dividePos['sign'] + 1; i < dividePos['end']; i++) {
+    for (let i = dividePos['sign'] + 1; i < dividePos['end']; i++) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
             dividePos['end']
                 = i - 1;
@@ -221,13 +237,13 @@ function divide(algebra) {
 
 function sum(algebra) {
     let sumPos = {'start': 0, 'sign': algebra.indexOf("+"), 'end': algebra.length - 1};
-    for (var i = sumPos['sign'] - 1; i > 0; i--) {
+    for (let i = sumPos['sign'] - 1; i > 0; i--) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
             sumPos['start'] = i + 1;
             break;
         }
     }
-    for (var i = sumPos['sign'] + 1; i < sumPos['end']; i++) {
+    for (let i = sumPos['sign'] + 1; i < sumPos['end']; i++) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
             sumPos['end']
                 = i - 1;
@@ -247,13 +263,13 @@ function sum(algebra) {
 
 function minus(algebra) {
     let minusPos = {'start': 0, 'sign': algebra.indexOf("-"), 'end': algebra.length - 1};
-    for (var i = minusPos['sign'] - 1; i > 0; i--) {
+    for (let i = minusPos['sign'] - 1; i > 0; i--) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
             minusPos['start'] = i + 1;
             break;
         }
     }
-    for (var i = minusPos['sign'] + 1; i < minusPos['end']; i++) {
+    for (let i = minusPos['sign'] + 1; i < minusPos['end']; i++) {
         if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
             minusPos['end']
                 = i - 1;
