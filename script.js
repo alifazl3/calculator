@@ -14,6 +14,8 @@ var historyLogDiv = document.getElementById("historyLog");
 //functions
 function calculate(algebra, act = false) {
     if (act) {
+        clearSecondDisplay();
+
         addToSecondDisplay(algebra);
         historyLogArr.push(algebra);
     }
@@ -143,6 +145,12 @@ function addToSecondDisplay(adding) {
     display.innerText = displayTxt + adding;
 }
 
+function clearSecondDisplay() {
+    let display = document.getElementById('seconddisplay');
+    display.innerText = '';
+
+}
+
 function clearDisplay() {
     let display = document.getElementById('display');
     display.innerText = '';
@@ -162,6 +170,7 @@ function keyCode(event) {
 
     }
     if (event.key == "Escape") {
+        clearSecondDisplay();
         clearDisplay();
     }
     if (event.key == "+") {
