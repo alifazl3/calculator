@@ -1,14 +1,24 @@
+//setting
 var log = true;
 
 
+//reference
+var historySit = true;
+var signs = {'divide': '%C3%B7', 'multiple': '%C3%97'};
 
+var historyLogArr = [];
+var shadowBoxNum = {'historyBtn': 0};
+var setIntervalArr = {'historyBtn': null};
+var historyLogDiv = document.getElementById("historyLog");
+
+//functions
 function calculate(algebra, act = false) {
     if (act) {
-
         addToSecondDisplay(algebra);
+        historyLogArr.push(algebra);
     }
+
     algebra = encodeURI(algebra);
-    let signs = {'divide': '%C3%B7', 'multiple': '%C3%97'};
 
 
     while (algebra.indexOf(signs['divide']) > -1) {
@@ -17,7 +27,6 @@ function calculate(algebra, act = false) {
     while (algebra.indexOf(signs['multiple']) > -1) {
         algebra = algebra.replace(signs['multiple'], '*');
     }
-
 
     if (algebra.indexOf("(") > -1) {
         let parStart = algebra.indexOf("(");
@@ -53,14 +62,13 @@ function calculate(algebra, act = false) {
         // return false;
     }
 
-    var nextRound = true;
-    var i = 0;
-    var char;
+    let nextRound = true;
+    let i = 0;
+    let char;
 
 
     while (nextRound) {
         char = algebra.substr(i, 1);
-        console.log(char, i)
         nextRound = false;
 
         if (char == "/") {
@@ -116,6 +124,9 @@ function calculate(algebra, act = false) {
     if (act) {
         clearDisplay();
         addToDisplay(algebra);
+        historyLogArr.push(algebra);
+        log_history();
+
     }
     return algebra;
 }
@@ -159,7 +170,6 @@ function keyCode(event) {
     }
     if (event.key == "-") {
         addToDisplay('-');
-
     }
     if (event.key == "/") {
         addToDisplay(decodeURI('%C3%B7'));
@@ -178,6 +188,9 @@ function keyCode(event) {
     }
     if (event.key == "Enter") {
         calculate(document.getElementById('display').innerText, true);
+    }
+    if (event.key == "h") {
+        historyToggle();
     }
     // alert(event.key);
 }
@@ -286,3 +299,38 @@ function minus(algebra) {
     algebra = algebra.replace(algabraNew, minus);
     return algebra;
 }
+
+function historyToggle() {
+    document.getElementById('historyBtn').blur();
+    if (historySit) {
+        rotateGlob('historyBtn');
+        historyLogDiv.style.display = 'block';
+    } else {
+        clearInterval(setIntervalArr['historyBtn']);
+        historyLogDiv.style.display = 'none';
+
+    }
+    historySit = !historySit;
+}
+
+function log_history() {
+        historyLogDiv.innerText = '';
+    for (var i = 0; i < historyLogArr.length; i++) {
+        if (i % 2 == 0) {
+            historyLogDiv.innerText =historyLogDiv.innerText + "\n" + historyLogArr[i] + ' = ' + historyLogArr[i + 1];
+        }
+    }
+}
+
+// motion function
+function rotateGlob(globeId) {
+    setIntervalArr[globeId] = setInterval(function changeShadoBox() {
+        var element = document.getElementById(globeId);
+        element.style.boxShadow = 'inset ' + shadowBoxNum[globeId] + 'px 0px 20px 3px #bed4e1';
+        shadowBoxNum[globeId] += 1;
+        if (shadowBoxNum[globeId] > 100) {
+            shadowBoxNum[globeId] = -100;
+        }
+    }, 1);
+}
+

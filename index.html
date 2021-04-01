@@ -7,7 +7,13 @@
 
 </head>
 <body onkeydown="keyCode(event)">
-<div class="main" >
+<div class="tools">
+    <button class="tools__historyToggle" id="historyBtn" onclick="historyToggle()" >history</button>
+    <div class="tools__history" id="historyLog" style="display: none">
+
+    </div>
+</div>
+<div class="main">
     <div class="main__calculator">
         <div class="main__calculator__secondDisplay" id="seconddisplay">
         </div>
@@ -37,7 +43,9 @@
             <br>
             <div class="main__calculator__buttons__btn" onclick="clearDisplay()">ac</div>
             <div class="main__calculator__buttons__btn" onclick="addToDisplay('0')">0</div>
-            <div class="main__calculator__buttons__btn" onclick="calculate(document.getElementById('display').innerText, true)">&#61;</div>
+            <div class="main__calculator__buttons__btn"
+                 onclick="calculate(document.getElementById('display').innerText, true)">&#61;
+            </div>
             <div class="main__calculator__buttons__btn" onclick="addToDisplay('&#215;')">&#215;</div>
         </div>
     </div>
