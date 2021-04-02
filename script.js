@@ -15,20 +15,18 @@ var historyLogDiv = document.getElementById("historyLog");
 function calculate(algebra, act = false) {
     if (act) {
         clearSecondDisplay();
-
         addToSecondDisplay(algebra);
         historyLogArr.push(algebra);
     }
 
     algebra = encodeURI(algebra);
-
-
     while (algebra.indexOf(signs['divide']) > -1) {
         algebra = algebra.replace(signs['divide'], '/');
     }
     while (algebra.indexOf(signs['multiple']) > -1) {
         algebra = algebra.replace(signs['multiple'], '*');
     }
+
 
     if (algebra.indexOf("(") > -1) {
         let parStart = algebra.indexOf("(");
@@ -76,10 +74,12 @@ function calculate(algebra, act = false) {
         if (char == "/") {
             algebra = divide(algebra);
             i = -1;
+            continue;
         }
         if (char == "*") {
             algebra = multiple(algebra);
             i = -1;
+            continue;
         }
 
         if (algebra.indexOf('*') > -1) {
@@ -90,37 +90,8 @@ function calculate(algebra, act = false) {
         }
         i += 1
     }
-    nextRound = true;
-    i = 0;
-    while (nextRound) {
-        char = algebra.substr(i, 1);
-        console.log(char, i);
-        nextRound = false;
 
-
-        if (char == "+") {
-            algebra = sum(algebra);
-            i = -1;
-        }
-        if (char == "-") {
-            algebra = minus(algebra);
-            i = -1;
-        }
-
-        if (algebra.indexOf('+') > -1) {
-            nextRound = true;
-        }
-        if (algebra.indexOf('-') > -1) {
-
-
-            nextRound = true;
-            if (algebra.substr(0, 1) == '-') {
-                nextRound = false;
-            }
-        }
-        i += 1;
-    }
-
+    algebra = solveAllPlusAndMinus(algebra);
 
     console.log(algebra);
     if (act) {
@@ -130,6 +101,29 @@ function calculate(algebra, act = false) {
         log_history();
 
     }
+    return algebra;
+}
+
+function solveAllPlusAndMinus(algebra) {
+    let parts = [];
+    let z = 0;
+    for (let i = 0; i < algebra.length; i++) {
+        let char = algebra.substr(i, 1);
+
+        if (i != 0) {
+            if (char == '-' || char == '+') {
+                parts[z] = parseFloat(parts[z]);
+                z += 1;
+            }
+        }
+
+        parts[z] = (parts[z] == undefined ? '' : parts[z]) + char;
+
+
+    }
+    parts[z] = parseFloat(parts[z]);
+
+    algebra =eval(parts.join('+'));
     return algebra;
 }
 
@@ -207,13 +201,13 @@ function keyCode(event) {
 function multiple(algebra) {
     let multiplePos = {'start': 0, 'sign': algebra.indexOf("*"), 'end': algebra.length - 1};
     for (let i = multiplePos['sign'] - 1; i > 0; i--) {
-        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
+        if (algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*"||algebra.substr(i, 1) == "-"||algebra.substr(i, 1) == "+") {
             multiplePos['start'] = i + 1;
             break;
         }
     }
     for (let i = multiplePos['sign'] + 1; i < multiplePos['end']; i++) {
-        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
+        if (algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*"||algebra.substr(i, 1) == "-"||algebra.substr(i, 1) == "+") {
             multiplePos['end'] = i - 1;
             break;
         }
@@ -233,13 +227,15 @@ function multiple(algebra) {
 function divide(algebra) {
     let dividePos = {'start': 0, 'sign': algebra.indexOf("/"), 'end': algebra.length - 1};
     for (let i = dividePos['sign'] - 1; i > 0; i--) {
-        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
+        if (algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*"||algebra.substr(i, 1) == "-"||algebra.substr(i, 1) == "+") {
+
             dividePos['start'] = i + 1;
             break;
         }
     }
     for (let i = dividePos['sign'] + 1; i < dividePos['end']; i++) {
-        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
+        if (algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*"||algebra.substr(i, 1) == "-"||algebra.substr(i, 1) == "+") {
+
             dividePos['end']
                 = i - 1;
             break;
@@ -257,58 +253,6 @@ function divide(algebra) {
 
 }
 
-function sum(algebra) {
-    let sumPos = {'start': 0, 'sign': algebra.indexOf("+"), 'end': algebra.length - 1};
-    for (let i = sumPos['sign'] - 1; i > 0; i--) {
-        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
-            sumPos['start'] = i + 1;
-            break;
-        }
-    }
-    for (let i = sumPos['sign'] + 1; i < sumPos['end']; i++) {
-        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
-            sumPos['end']
-                = i - 1;
-            break;
-        }
-    }
-    let algabraNew = algebra.substr(sumPos['start'], sumPos['end'] - sumPos['start'] + 1);
-    let part1 = parseFloat(algabraNew.substr(0, algabraNew.indexOf('+')));
-    let part2 = parseFloat(algabraNew.substr(algabraNew.indexOf('+') + 1));
-    let sum = part1 + part2;
-    if (log) {
-        console.log(algebra, algabraNew, sum);
-    }
-    algebra = algebra.replace(algabraNew, sum);
-    return algebra;
-}
-
-function minus(algebra) {
-    let minusPos = {'start': 0, 'sign': algebra.indexOf("-"), 'end': algebra.length - 1};
-    for (let i = minusPos['sign'] - 1; i > 0; i--) {
-        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
-            minusPos['start'] = i + 1;
-            break;
-        }
-    }
-    for (let i = minusPos['sign'] + 1; i < minusPos['end']; i++) {
-        if (algebra.substr(i, 1) == "+" || algebra.substr(i, 1) == "-" || algebra.substr(i, 1) == "/" || algebra.substr(i, 1) == "*") {
-            minusPos['end']
-                = i - 1;
-            break;
-        }
-    }
-    let algabraNew = algebra.substr(minusPos['start'], minusPos['end'] - minusPos['start'] + 1);
-    let part1 = parseFloat(algabraNew.substr(0, algabraNew.indexOf('-')));
-    let part2 = parseFloat(algabraNew.substr(algabraNew.indexOf('-') + 1));
-    let minus = part1 - part2;
-    if (log) {
-        console.log(algebra, algabraNew, minus);
-    }
-    algebra = algebra.replace(algabraNew, minus);
-    return algebra;
-}
-
 function historyToggle() {
     document.getElementById('historyBtn').blur();
     if (historySit) {
@@ -323,10 +267,10 @@ function historyToggle() {
 }
 
 function log_history() {
-        historyLogDiv.innerText = '';
+    historyLogDiv.innerText = '';
     for (var i = 0; i < historyLogArr.length; i++) {
         if (i % 2 == 0) {
-            historyLogDiv.innerText =historyLogDiv.innerText + "\n" + historyLogArr[i] + ' = ' + historyLogArr[i + 1];
+            historyLogDiv.innerText = historyLogDiv.innerText + "\n" + historyLogArr[i] + ' = ' + historyLogArr[i + 1];
         }
     }
 }
